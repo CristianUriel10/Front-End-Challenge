@@ -2,7 +2,7 @@ import './App.css';
 import CircleComponent from './Components/Circle/circle'
 import ImageComponent from './Components/Image/image'
 import axios from "axios";
-import { useState, useRef, useEffect } from "react";  
+import { useState, useEffect } from "react";  
 import Select from 'react-select';
 
 function App() {
