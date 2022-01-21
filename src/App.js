@@ -2,7 +2,7 @@ import './App.css';
 import CircleComponent from './Components/Circle/circle'
 import ImageComponent from './Components/Image/image'
 import axios from "axios";
-import React, { useState } from "react";  
+import { useState, useRef, useEffect } from "react";  
 import Select from 'react-select';
 
 function App() {
@@ -17,12 +17,10 @@ function App() {
       setArrImagesStories(response.data)
     });
   }
-
-  console.log(arrimagesStories)
   async function fetchData() {
     await axios.get('https://api.thecatapi.com/v1/images/search/?limit=12&has_breeds=true').then((response) => {
-      setArrImages(response.data)
-      setArrTempImages(response.data)
+      setArrImages(arrimages => [...arrimages, ...response.data])
+      setArrTempImages(arrimages => [...arrimages, ...response.data])
     });
   }
   const filter = (value) => {
@@ -31,9 +29,14 @@ function App() {
   }
 
   
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData();
     fetchDataStories();
+    window.addEventListener('scroll', function() {
+      if ((window.innerHeight + window.scrollY) === document.body.offsetHeight) {
+        fetchData();
+      }
+    });
   }, []);
 
   if (arrimages.length !== 0 && loading){
@@ -68,7 +71,7 @@ function App() {
           </div>
           <div>
           <Select
-            placeholder='Seleccionar'
+            placeholder='Select breed'
             options={breeds}
             // eslint-disable-next-line no-sequences
             onChange={(e) => filter(e.value)}
